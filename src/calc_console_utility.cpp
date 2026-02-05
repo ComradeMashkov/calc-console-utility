@@ -18,9 +18,11 @@ int main(int argc, char **argv) {
     while ((opt = getopt_long(argc, argv, "hasmdpf", longopts, &longind)) != -1) {
         switch (opt) {
         case 'h':
-            std::cout << "Usage: " << argv[0]
-                      << " [--add | --sub | --mul | --div | --pow | --fac] num1 num2 (optional)\n";
-            break;
+            std::cout << "Usage: " << argv[0] << " [--add | --sub | --mul | --div | --pow] A B\n"
+                      << "Usage: " << argv[0] << " --fac A\n"
+                      << "Warning: for negative numbers use '--', e.g. " << argv[0]
+                      << " --add -- -1 5\n";
+            return 0;
         case 'a':
             op = OPCODE::ADD;
             break;
@@ -48,11 +50,20 @@ int main(int argc, char **argv) {
         }
     }
 
-    double res = 0.0;
-    try {
-        const int a = atoi(argv[optind]);
-        const int b = atoi(argv[optind + 1]);
+    const int needed = (op == OPCODE::FAC) ? 1 : 2;
+    const int available = argc - optind;
 
+    if (available < needed) {
+        std::cerr << "Error: not enough arguments. Try " << argv[0] << " --help for help.\n";
+        return 1;
+    }
+
+    const int a = atoi(argv[optind]);
+    const int b = (op == OPCODE::FAC) ? 0 : atoi(argv[optind + 1]);
+
+    double res = 0.0;
+
+    try {
         switch (op) {
         case OPCODE::ADD:
             res = mathlib::add(a, b);
@@ -80,7 +91,7 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    std::cout << "Result: %.2lf" << res << "\n";
+    std::cout << "Result: " << res << "\n";
 
     return 0;
 }
