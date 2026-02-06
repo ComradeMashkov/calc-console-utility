@@ -15,6 +15,9 @@ Checks: >
     -cppcoreguidelines-pro-bounds-pointer-arithmetic,
     -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
     -hicpp-no-array-decay,
-    -cert-err34-c
+    -cert-err34-c,
+    -cert-err33-c,
+    -cppcoreguidelines-pro-type-vararg,
+    -hicpp-vararg
 WarningsAsErrors: '*'
 HeaderFilterRegex: '.*'
