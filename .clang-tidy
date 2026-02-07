@@ -18,6 +18,9 @@ Checks: >
     -cert-err34-c,
     -cert-err33-c,
     -cppcoreguidelines-pro-type-vararg,
-    -hicpp-vararg
+    -hicpp-vararg,
+    -cppcoreguidelines-pro-type-union-access,
+    -cppcoreguidelines-pro-type-member-init,
+    -hicpp-member-init
 WarningsAsErrors: '*'
 HeaderFilterRegex: '.*'

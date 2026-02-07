@@ -10,7 +10,10 @@ struct Result {
     std::int64_t x = 0L;
     std::int64_t y = 0L;
     State state = State::NUL;
-    double res = 0.0;
+    union {
+        std::int64_t i64;
+        double d;
+    } res;
 };
 
 void check_argc(Result &result, State state, int argc, int argc_needed);
@@ -126,22 +129,22 @@ void check(Result &result, char **argv) {
 void calculate(Result &result, mathlib::ErrorCode &ec) {
     switch (result.state) {
     case State::ADD:
-        ec = mathlib::add(result.x, result.y, result.res);
+        ec = mathlib::add(result.x, result.y, result.res.i64);
         break;
     case State::SUB:
-        ec = mathlib::sub(result.x, result.y, result.res);
+        ec = mathlib::sub(result.x, result.y, result.res.i64);
         break;
     case State::MUL:
-        ec = mathlib::mul(result.x, result.y, result.res);
+        ec = mathlib::mul(result.x, result.y, result.res.i64);
         break;
     case State::DIV:
-        ec = mathlib::div(result.x, result.y, result.res);
+        ec = mathlib::div(result.x, result.y, result.res.d);
         break;
     case State::POW:
-        ec = mathlib::pow(result.x, result.y, result.res);
+        ec = mathlib::pow(result.x, result.y, result.res.d);
         break;
     case State::FAC:
-        ec = mathlib::fac(result.x, result.res);
+        ec = mathlib::fac(result.x, result.res.i64);
         break;
     default:
         return;
@@ -179,7 +182,12 @@ void print(Result &result, mathlib::ErrorCode &ec) {
         fprintf(stderr, "Error during program execution.\n");
         break;
     default:
-        fprintf(stdout, "Result: %.4lf\n", result.res);
+        if (result.state == State::ADD || result.state == State::SUB ||
+            result.state == State::MUL || result.state == State::FAC) {
+            fprintf(stdout, "Result: %lld\n", static_cast<long long>(result.res.i64));
+        } else {
+            fprintf(stdout, "Result: %.4lf\n", result.res.d);
+        }
         break;
     }
 }
