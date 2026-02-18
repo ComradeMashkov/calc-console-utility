@@ -7,12 +7,13 @@ include(FetchContent)
 FetchContent_Declare(
     mathcalc
     GIT_REPOSITORY https://github.com/ComradeMashkov/calc-math-library.git
-    GIT_TAG main
+    GIT_TAG oop_calc_math_lib
 )
 
 FetchContent_MakeAvailable(mathcalc)
 
-add_executable(calculator src/calc_console_utility.cpp)
+add_executable(calculator src/main.cpp src/calculator.cpp src/checker.cpp src/parser.cpp src/printer.cpp src/runner.cpp)
+target_include_directories(calculator PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(calculator PRIVATE mathcalc)
 
 # clang-tidy
