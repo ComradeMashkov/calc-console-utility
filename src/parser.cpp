@@ -18,10 +18,10 @@ void Parser::parse() const {
         switch (opt) {
         case 'j':
             if (result_->state != State::NUL) {
-                throw std::runtime_error("Error: cannot combine --json with other operations.\n");
+                throw std::runtime_error("Error: cannot combine --json with other operations.");
             }
             if (optarg == nullptr || *optarg == '\0') {
-                throw std::runtime_error("Error: --json requires a file path.\n");
+                throw std::runtime_error("Error: --json requires a file path.");
             }
             result_->state = State::JSON;
             result_->json_path = optarg;
@@ -48,13 +48,13 @@ void Parser::parse() const {
             set_state(State::FAC);
             break;
         case ':':
-            throw std::runtime_error("Error: option requires an argument.\n");
+            throw std::runtime_error("Error: option requires an argument.");
         case '?':
             throw std::runtime_error(
-                "Unknown option. Use calculator --help for available commands.\n");
+                "Unknown option. Use calculator --help for available commands.");
         default:
             throw std::runtime_error(
-                "Error getting options. Use calculator --help for available commands.\n");
+                "Error getting options. Use calculator --help for available commands.");
         }
     }
 }
@@ -62,7 +62,7 @@ void Parser::parse() const {
 void Parser::set_state(State state) const {
     if (result_->state != State::NUL) {
         throw std::runtime_error(
-            "Error: multiple operations specified. Choose exactly one. Use --help.\n");
+            "Error: multiple operations specified. Choose exactly one. Use --help.");
     }
 
     result_->state = state;

@@ -9,28 +9,28 @@ void JsonLoader::load() const {
     }
 
     if (result_->json_path == nullptr) {
-        throw std::runtime_error("Error: json path is null.\n");
+        throw std::runtime_error("Error: json path is null.");
     }
 
     std::ifstream in(result_->json_path);
     if (!in) {
-        throw std::runtime_error("Error: cannot open json file.\n");
+        throw std::runtime_error("Error: cannot open json file.");
     }
 
     nlohmann::json j;
     try {
         in >> j;
     } catch (...) {
-        throw std::runtime_error("Error: invalid json.\n");
+        throw std::runtime_error("Error: invalid json.");
     }
 
     if (!j.contains("opr") || !j["opr"].is_string()) {
-        throw std::runtime_error("Error: json must contain string field \"opr\".\n");
+        throw std::runtime_error("Error: json must contain string field \"opr\".");
     }
 
     const auto *opr_ptr = j["opr"].get_ptr<const nlohmann::json::string_t *>();
     if (opr_ptr == nullptr) {
-        throw std::runtime_error("Error: cannot read \"op\" as string.\n");
+        throw std::runtime_error("Error: cannot read \"op\" as string.");
     }
     const char *opr = opr_ptr->c_str();
 
@@ -58,26 +58,26 @@ void JsonLoader::load() const {
         result_->state = State::FAC;
         result_->x.set(read_i64(j, "lhs"));
     } else {
-        throw std::runtime_error("Error: unknown opr in json.\n");
+        throw std::runtime_error("Error: unknown opr in json.");
     }
 }
 
 std::int64_t JsonLoader::read_i64(const nlohmann::json &j, const char *key) {
     if (!j.contains(key)) {
         char buf[kErrorBufSize];
-        std::snprintf(buf, sizeof(buf), "Error: json missing field \"%s\".\n", key);
+        std::snprintf(buf, sizeof(buf), "Error: json missing field \"%s\".", key);
         throw std::runtime_error(buf);
     }
     if (!j[key].is_number_integer()) {
         char buf[kErrorBufSize];
-        std::snprintf(buf, sizeof(buf), "Error: field \"%s\" must be an integer.\n", key);
+        std::snprintf(buf, sizeof(buf), "Error: field \"%s\" must be an integer.", key);
         throw std::runtime_error(buf);
     }
     try {
         return j[key].get<std::int64_t>();
     } catch (...) {
         char buf[kErrorBufSize];
-        std::snprintf(buf, sizeof(buf), "Error: field \"%s\" is out of int64 range.\n", key);
+        std::snprintf(buf, sizeof(buf), "Error: field \"%s\" is out of int64 range.", key);
         throw std::runtime_error(buf);
     }
 }

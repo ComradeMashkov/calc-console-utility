@@ -18,7 +18,14 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(json)
 
-add_executable(calculator src/main.cpp src/calculator.cpp src/checker.cpp src/parser.cpp src/printer.cpp src/runner.cpp src/json_loader.cpp)
+FetchContent_Declare(
+    spdlog
+    GIT_REPOSITORY https://github.com/gabime/spdlog.git
+    GIT_TAG v1.17.0
+)
+FetchContent_MakeAvailable(spdlog)
+
+add_executable(calculator src/main.cpp src/calculator.cpp src/checker.cpp src/parser.cpp src/printer.cpp src/runner.cpp src/json_loader.cpp src/logger.cpp)
 target_include_directories(calculator PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(calculator PRIVATE mathcalc nlohmann_json::nlohmann_json spdlog::spdlog)
 
