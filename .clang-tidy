@@ -27,4 +27,4 @@ Checks: >
     -fuchsia-default-arguments-calls,
     -readability-redundant-access-specifiers
 WarningsAsErrors: '*'
-HeaderFilterRegex: '.*'
+HeaderFilterRegex: '^(?!.*build/_deps/).*(src|include)/'

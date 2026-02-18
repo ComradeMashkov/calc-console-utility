@@ -7,7 +7,11 @@ namespace calc_utility {
 void Runner::run() const {
     try {
         parser_.parse();
-        checker_.check();
+        if (result_->state == State::JSON) {
+            json_loader_.load();
+        } else {
+            checker_.check();
+        }
         calculator_.calculate();
         printer_.print();
     } catch (const HelpRequest &e) {

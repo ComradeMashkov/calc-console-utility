@@ -7,14 +7,25 @@ namespace calc_utility {
 void Parser::parse() const {
     int opt = 0;
     static const struct option longopts[] = {
-        {"help", no_argument, nullptr, 'h'}, {"add", no_argument, nullptr, 'a'},
-        {"sub", no_argument, nullptr, 's'},  {"mul", no_argument, nullptr, 'm'},
-        {"div", no_argument, nullptr, 'd'},  {"pow", no_argument, nullptr, 'p'},
-        {"fac", no_argument, nullptr, 'f'},  {nullptr, no_argument, nullptr, '\0'}};
+        {"json", required_argument, nullptr, 'j'}, {"help", no_argument, nullptr, 'h'},
+        {"add", no_argument, nullptr, 'a'},        {"sub", no_argument, nullptr, 's'},
+        {"mul", no_argument, nullptr, 'm'},        {"div", no_argument, nullptr, 'd'},
+        {"pow", no_argument, nullptr, 'p'},        {"fac", no_argument, nullptr, 'f'},
+        {nullptr, no_argument, nullptr, '\0'}};
 
     int longind = 0;
-    while ((opt = getopt_long(argc_, argv_, "hasmdpf", longopts, &longind)) != -1) {
+    while ((opt = getopt_long(argc_, argv_, ":hasmdpfj:", longopts, &longind)) != -1) {
         switch (opt) {
+        case 'j':
+            if (result_->state != State::NUL) {
+                throw std::runtime_error("Error: cannot combine --json with other operations.\n");
+            }
+            if (optarg == nullptr || *optarg == '\0') {
+                throw std::runtime_error("Error: --json requires a file path.\n");
+            }
+            result_->state = State::JSON;
+            result_->json_path = optarg;
+            break;
         case 'h':
             throw HelpRequest{};
             break;
@@ -36,6 +47,8 @@ void Parser::parse() const {
         case 'f':
             set_state(State::FAC);
             break;
+        case ':':
+            throw std::runtime_error("Error: option requires an argument.\n");
         case '?':
             throw std::runtime_error(
                 "Unknown option. Use calculator --help for available commands.\n");
