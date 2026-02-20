@@ -16,7 +16,7 @@ struct Result {
     mathlib::IntMath i64;
     mathlib::DblMath d;
 
-    const char *json_path = nullptr;
+    const char *json_payload = nullptr;
 };
 
 struct HelpRequest : std::exception {
@@ -24,7 +24,7 @@ struct HelpRequest : std::exception {
         return "Usage: calculator [--add | --sub | --mul | --div | --pow] A B\n"
                "Usage: calculator --fac A\n"
                "Usage: calculator --json file.json\n"
-               "Warning: for negative numbers use '--', e.g. calculator --add -- -1 -5\n";
+               "Warning: for negative numbers use '--', e.g. calculator --add -- -1 -5";
     }
 };
 

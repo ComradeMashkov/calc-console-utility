@@ -7,7 +7,7 @@ namespace calc_utility {
 
 class JsonLoader {
   public:
-    explicit JsonLoader(Result &result) : result_(&result) {}
+    explicit JsonLoader(Result &result) : result_(result) {}
 
     void load() const;
 
@@ -16,7 +16,7 @@ class JsonLoader {
 
   private:
     static constexpr std::size_t kErrorBufSize = 128;
-    Result *result_;
+    Result &result_;
 };
 
 } // namespace calc_utility

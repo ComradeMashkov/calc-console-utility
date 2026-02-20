@@ -13,7 +13,7 @@ protected:
         opterr = 0;
 
         res.state = State::NUL;
-        res.json_path = nullptr;
+        res.json_payload = nullptr;
     }
 };
 
@@ -32,7 +32,7 @@ TEST_F(ParserTest, ParserAddFlag) {
 TEST_F(ParserTest, JsonSetsStateAndPath) {
     char prog[] = "calculator";
     char opt1[] = "--json";
-    char opt2[] = "file.json";
+    char opt2[] = R"({"opr":"add","lhs":1,"rhs":2})";
     char* argv[] = { prog, opt1, opt2 };
     int argc = 3;
 
@@ -40,7 +40,7 @@ TEST_F(ParserTest, JsonSetsStateAndPath) {
     p.parse();
 
     EXPECT_EQ(res.state, State::JSON);
-    EXPECT_STREQ(res.json_path, "file.json");
+    EXPECT_STREQ(res.json_payload, R"({"opr":"add","lhs":1,"rhs":2})");
 }
 
 TEST_F(ParserTest, JsonCannotCombineWithOtherOps) {

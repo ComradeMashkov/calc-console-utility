@@ -17,14 +17,14 @@ void Parser::parse() const {
     while ((opt = getopt_long(argc_, argv_, ":hasmdpfj:", longopts, &longind)) != -1) {
         switch (opt) {
         case 'j':
-            if (result_->state != State::NUL) {
+            if (result_.state != State::NUL) {
                 throw std::runtime_error("Error: cannot combine --json with other operations.");
             }
             if (optarg == nullptr || *optarg == '\0') {
                 throw std::runtime_error("Error: --json requires a file path.");
             }
-            result_->state = State::JSON;
-            result_->json_path = optarg;
+            result_.state = State::JSON;
+            result_.json_payload = optarg;
             break;
         case 'h':
             throw HelpRequest{};
@@ -60,12 +60,12 @@ void Parser::parse() const {
 }
 
 void Parser::set_state(State state) const {
-    if (result_->state != State::NUL) {
+    if (result_.state != State::NUL) {
         throw std::runtime_error(
             "Error: multiple operations specified. Choose exactly one. Use --help.");
     }
 
-    result_->state = state;
+    result_.state = state;
 }
 
 } // namespace calc_utility

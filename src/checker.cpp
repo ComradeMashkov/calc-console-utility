@@ -5,23 +5,23 @@
 namespace calc_utility {
 
 void Checker::check() const {
-    if (result_->state == State::NUL) {
+    if (result_.state == State::NUL) {
         throw std::runtime_error("Error: no operation specified. Use calculator --help.");
     }
 
-    const int needed = (result_->state == State::FAC) ? 1 : 2;
+    const int needed = (result_.state == State::FAC) ? 1 : 2;
     if ((argc_ - optind) < needed) {
         throw std::runtime_error(
             "Error: not enough arguments. Use calculator --help for command format.");
     }
 
-    if (!check_argv(result_->x, &argv_[optind])) {
+    if (!check_argv(result_.x, &argv_[optind])) {
         throw std::runtime_error(
             "Cannot parse input numbers. Use calculator --help for command format.");
     }
 
-    if (result_->state != State::FAC) {
-        if (!check_argv(result_->y, &argv_[optind + 1])) {
+    if (result_.state != State::FAC) {
+        if (!check_argv(result_.y, &argv_[optind + 1])) {
             throw std::runtime_error(
                 "Cannot parse input numbers. Use calculator --help for command format.");
         }

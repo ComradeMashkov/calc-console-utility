@@ -6,12 +6,12 @@ namespace calc_utility {
 
 class Calculator {
   public:
-    explicit Calculator(Result &result) : result_(&result) {}
+    explicit Calculator(Result &result) : result_(result) {}
 
     void calculate() const;
 
   private:
-    Result *result_;
+    Result &result_;
 };
 
 } // namespace calc_utility

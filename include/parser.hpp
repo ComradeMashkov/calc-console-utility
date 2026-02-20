@@ -7,7 +7,7 @@ namespace calc_utility {
 class Parser {
   public:
     explicit Parser(Result &result, int argc, char **argv)
-        : result_(&result), argc_(argc), argv_(argv) {}
+        : result_(result), argc_(argc), argv_(argv) {}
 
     void parse() const;
 
@@ -18,7 +18,7 @@ class Parser {
     int argc_;
     char **argv_;
 
-    Result *result_;
+    Result &result_;
 };
 
 } // namespace calc_utility

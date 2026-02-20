@@ -4,22 +4,17 @@
 namespace calc_utility {
 
 void JsonLoader::load() const {
-    if (result_->state != State::JSON) {
+    if (result_.state != State::JSON) {
         return;
     }
 
-    if (result_->json_path == nullptr) {
-        throw std::runtime_error("Error: json path is null.");
-    }
-
-    std::ifstream in(result_->json_path);
-    if (!in) {
-        throw std::runtime_error("Error: cannot open json file.");
+    if (result_.json_payload == nullptr) {
+        throw std::runtime_error("Error: json payload is null.");
     }
 
     nlohmann::json j;
     try {
-        in >> j;
+        j = nlohmann::json::parse(result_.json_payload);
     } catch (...) {
         throw std::runtime_error("Error: invalid json.");
     }
@@ -35,28 +30,28 @@ void JsonLoader::load() const {
     const char *opr = opr_ptr->c_str();
 
     if (std::strcmp(opr, "add") == 0) {
-        result_->state = State::ADD;
-        result_->x.set(read_i64(j, "lhs"));
-        result_->y.set(read_i64(j, "rhs"));
+        result_.state = State::ADD;
+        result_.x.set(read_i64(j, "lhs"));
+        result_.y.set(read_i64(j, "rhs"));
     } else if (std::strcmp(opr, "sub") == 0) {
-        result_->state = State::SUB;
-        result_->x.set(read_i64(j, "lhs"));
-        result_->y.set(read_i64(j, "rhs"));
+        result_.state = State::SUB;
+        result_.x.set(read_i64(j, "lhs"));
+        result_.y.set(read_i64(j, "rhs"));
     } else if (std::strcmp(opr, "mul") == 0) {
-        result_->state = State::MUL;
-        result_->x.set(read_i64(j, "lhs"));
-        result_->y.set(read_i64(j, "rhs"));
+        result_.state = State::MUL;
+        result_.x.set(read_i64(j, "lhs"));
+        result_.y.set(read_i64(j, "rhs"));
     } else if (std::strcmp(opr, "div") == 0) {
-        result_->state = State::DIV;
-        result_->x.set(read_i64(j, "lhs"));
-        result_->y.set(read_i64(j, "rhs"));
+        result_.state = State::DIV;
+        result_.x.set(read_i64(j, "lhs"));
+        result_.y.set(read_i64(j, "rhs"));
     } else if (std::strcmp(opr, "pow") == 0) {
-        result_->state = State::POW;
-        result_->x.set(read_i64(j, "lhs"));
-        result_->y.set(read_i64(j, "rhs"));
+        result_.state = State::POW;
+        result_.x.set(read_i64(j, "lhs"));
+        result_.y.set(read_i64(j, "rhs"));
     } else if (std::strcmp(opr, "fac") == 0) {
-        result_->state = State::FAC;
-        result_->x.set(read_i64(j, "lhs"));
+        result_.state = State::FAC;
+        result_.x.set(read_i64(j, "lhs"));
     } else {
         throw std::runtime_error("Error: unknown opr in json.");
     }

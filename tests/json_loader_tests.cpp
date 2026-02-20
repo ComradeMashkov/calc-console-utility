@@ -12,7 +12,7 @@ protected:
 
     void SetUp() override {
         res.state = State::NUL;
-        res.json_path = nullptr;
+        res.json_payload = nullptr;
 
         res.x = mathlib::IntMath();
         res.y = mathlib::IntMath();
@@ -21,6 +21,7 @@ protected:
 
 TEST_F(JsonLoaderTest, DoesNothingWhenStateNotJson) {
     res.state = State::ADD;
+    res.json_payload = R"({"opr":"add","lhs":1,"rhs":2})";
 
     JsonLoader j(res);
 
@@ -28,19 +29,10 @@ TEST_F(JsonLoaderTest, DoesNothingWhenStateNotJson) {
     EXPECT_EQ(res.state, State::ADD);
 }
 
-TEST_F(JsonLoaderTest, ThrowsWhenPathNull) {
+TEST_F(JsonLoaderTest, ThrowsWhenPayloadNull) {
     res.state = State::JSON;
-    res.json_path = nullptr;
+    res.json_payload = nullptr;
 
-    JsonLoader j(res);
-
-    EXPECT_THROW(j.load(), std::runtime_error);
-}
-
-TEST_F(JsonLoaderTest, ThrowsWhenFileCannotBeOpened) {
-    res.state = State::JSON;
-    res.json_path = "/tmp/this_file_should_not_exist.json";
-    
     JsonLoader j(res);
 
     EXPECT_THROW(j.load(), std::runtime_error);
@@ -48,7 +40,7 @@ TEST_F(JsonLoaderTest, ThrowsWhenFileCannotBeOpened) {
 
 TEST_F(JsonLoaderTest, ThrowsOnInvalidJson) {
     res.state = State::JSON;
-    res.json_path = "../input/invalid_json.json";
+    res.json_payload = "{ not a json }";
 
     JsonLoader j(res);
 
@@ -57,7 +49,7 @@ TEST_F(JsonLoaderTest, ThrowsOnInvalidJson) {
 
 TEST_F(JsonLoaderTest, ThrowsWhenOprMissing) {
     res.state = State::JSON;
-    res.json_path = "../input/opr_missing.json";
+    res.json_payload = R"({"lhs":10,"rhs":20})";
 
     JsonLoader j(res);
 
@@ -66,7 +58,7 @@ TEST_F(JsonLoaderTest, ThrowsWhenOprMissing) {
 
 TEST_F(JsonLoaderTest, ThrowsWhenOprNotString) {
     res.state = State::JSON;
-    res.json_path = "../input/opr_not_string.json";
+    res.json_payload = R"({"opr":123,"lhs":10,"rhs":20})";
 
     JsonLoader j(res);
 
@@ -75,7 +67,7 @@ TEST_F(JsonLoaderTest, ThrowsWhenOprNotString) {
 
 TEST_F(JsonLoaderTest, ThrowsOnUnknownOpr) {
     res.state = State::JSON;
-    res.json_path ="../input/unknown_opr.json";
+    res.json_payload = R"({"opr":"wat","lhs":10,"rhs":20})";
 
     JsonLoader j(res);
 
@@ -84,7 +76,7 @@ TEST_F(JsonLoaderTest, ThrowsOnUnknownOpr) {
 
 TEST_F(JsonLoaderTest, LoadsAdd) {
     res.state = State::JSON;
-    res.json_path = "../input/add.json";
+    res.json_payload = R"({"opr":"add","lhs":10,"rhs":20})";
 
     JsonLoader j(res);
 
@@ -97,7 +89,7 @@ TEST_F(JsonLoaderTest, LoadsAdd) {
 
 TEST_F(JsonLoaderTest, LoadsFac) {
     res.state = State::JSON;
-    res.json_path = "../input/fac.json";
+    res.json_payload = R"({"opr":"fac","lhs":5})";
 
     JsonLoader j(res);
 
@@ -109,7 +101,7 @@ TEST_F(JsonLoaderTest, LoadsFac) {
 
 TEST_F(JsonLoaderTest, ThrowsWhenMissingRequiredField) {
     res.state = State::JSON;
-    res.json_path =  "../input/missing_required_field.json";
+    res.json_payload =  R"({"opr":"add","lhs":10})";
 
     JsonLoader j(res);
 
@@ -118,7 +110,7 @@ TEST_F(JsonLoaderTest, ThrowsWhenMissingRequiredField) {
 
 TEST_F(JsonLoaderTest, ThrowsWhenFieldNotInteger) {
     res.state = State::JSON;
-    res.json_path = "../input/field_not_integer.json";
+    res.json_payload = R"({"opr":"add","lhs":10,"rhs":"20"})";
 
     JsonLoader j(res);
 
