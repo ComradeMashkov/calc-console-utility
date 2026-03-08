@@ -35,6 +35,8 @@ if (BUILD_TESTING)
     FetchContent_MakeAvailable(googletest)
 endif()
 
+find_package(PostgreSQL REQUIRED)
+
 add_library(calc_core
     src/calculator.cpp
     src/checker.cpp
@@ -43,10 +45,17 @@ add_library(calc_core
     src/runner.cpp
     src/json_loader.cpp
     src/logger.cpp
+    src/pq_shell.cpp
 )
 
 target_include_directories(calc_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_link_libraries(calc_core PUBLIC mathcalc nlohmann_json::nlohmann_json spdlog::spdlog)
+target_link_libraries(calc_core 
+    PUBLIC 
+        mathcalc
+        nlohmann_json::nlohmann_json
+        spdlog::spdlog
+        PostgreSQL::PostgreSQL    
+)
 
 add_executable(calculator src/main.cpp)
 target_link_libraries(calculator PRIVATE calc_core)
