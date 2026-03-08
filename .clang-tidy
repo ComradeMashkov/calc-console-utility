@@ -21,6 +21,10 @@ Checks: >
     -hicpp-vararg,
     -cppcoreguidelines-pro-type-union-access,
     -cppcoreguidelines-pro-type-member-init,
-    -hicpp-member-init
+    -hicpp-member-init,
+    -fuchsia-default-arguments-declarations,
+    -modernize-use-nodiscard,
+    -fuchsia-default-arguments-calls,
+    -readability-redundant-access-specifiers
 WarningsAsErrors: '*'
-HeaderFilterRegex: '.*'
+HeaderFilterRegex: '^(?!.*build/_deps/).*(src|include)/'

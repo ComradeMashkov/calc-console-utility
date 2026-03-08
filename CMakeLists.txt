@@ -7,13 +7,55 @@ include(FetchContent)
 FetchContent_Declare(
     mathcalc
     GIT_REPOSITORY https://github.com/ComradeMashkov/calc-math-library.git
-    GIT_TAG main
+    GIT_TAG oop_calc_math_lib
 )
-
 FetchContent_MakeAvailable(mathcalc)
 
-add_executable(calculator src/calc_console_utility.cpp)
-target_link_libraries(calculator PRIVATE mathcalc)
+FetchContent_Declare(
+    json
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG v3.12.0
+)
+FetchContent_MakeAvailable(json)
+
+FetchContent_Declare(
+    spdlog
+    GIT_REPOSITORY https://github.com/gabime/spdlog.git
+    GIT_TAG v1.17.0
+)
+FetchContent_MakeAvailable(spdlog)
+
+include(CTest)
+if (BUILD_TESTING)
+    FetchContent_Declare(
+        googletest
+        GIT_REPOSITORY https://github.com/google/googletest.git
+        GIT_TAG v1.17.0
+    )
+    FetchContent_MakeAvailable(googletest)
+endif()
+
+add_library(calc_core
+    src/calculator.cpp
+    src/checker.cpp
+    src/parser.cpp
+    src/printer.cpp
+    src/runner.cpp
+    src/json_loader.cpp
+    src/logger.cpp
+)
+
+target_include_directories(calc_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_link_libraries(calc_core PUBLIC mathcalc nlohmann_json::nlohmann_json spdlog::spdlog)
+
+add_executable(calculator src/main.cpp)
+target_link_libraries(calculator PRIVATE calc_core)
+
+if (BUILD_TESTING)
+  add_executable(tests tests/parser_tests.cpp tests/checker_tests.cpp tests/calculator_tests.cpp tests/json_loader_tests.cpp)
+  target_link_libraries(tests PRIVATE calc_core GTest::gtest_main)
+  add_test(NAME tests COMMAND tests)
+endif()
 
 # clang-tidy
 find_program(CLANG_TIDY_EXE NAMES clang-tidy)
