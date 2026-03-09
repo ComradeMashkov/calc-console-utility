@@ -1,20 +1,20 @@
 #include "pq_shell.hpp"
 
-namespace calc_utility
-{
+namespace calc_utility {
 
 void PGconnDeleter::operator()(PGconn *conn) const noexcept {
-    if (conn) PQfinish(conn);
+    if (conn)
+        PQfinish(conn);
 }
 
 void PGresultDeleter::operator()(PGresult *result) const noexcept {
-    if (result) PQclear(result);
+    if (result)
+        PQclear(result);
 }
 
-PqResult::PqResult(PGresult *res)
-    : res_(res)
-{
-    if (!res_) throw PqError("Failed to allocate PGresult!");
+PqResult::PqResult(PGresult *res) : res_(res) {
+    if (!res_)
+        throw PqError("Failed to allocate PGresult!");
 }
 
 ExecStatusType PqResult::status() const noexcept {
@@ -38,7 +38,8 @@ bool PqResult::is_null(int row, int col) const noexcept {
 }
 
 std::string PqResult::value(int row, int col) const {
-    if (is_null(row, col)) return {};
+    if (is_null(row, col))
+        return {};
     return PQgetvalue(res_.get(), row, col);
 }
 
@@ -51,12 +52,12 @@ PGresult *PqResult::get_handle() noexcept {
     return res_.get();
 }
 
-PqShell::PqShell(const std::string &conn)
-    : conn_(PQconnectdb(conn.c_str()))
-{
-    if (!conn_) throw PqError("Failed to allocate PGconn!");
+PqShell::PqShell(const std::string &conn) : conn_(PQconnectdb(conn.c_str())) {
+    if (!conn_)
+        throw PqError("Failed to allocate PGconn!");
 
-    if (PQstatus(conn_.get()) != CONNECTION_OK) throw PqError(PQerrorMessage(conn_.get()));
+    if (PQstatus(conn_.get()) != CONNECTION_OK)
+        throw PqError(PQerrorMessage(conn_.get()));
 }
 
 bool PqShell::is_open() const noexcept {
@@ -75,9 +76,22 @@ std::string PqShell::error_msg() const {
     return conn_ ? std::string(PQerrorMessage(conn_.get())) : "No connection";
 }
 
-PqResult PqShell::exec(std::string_view sql) {
-    const std::string query(sql);
-    PGresult* raw = PQexec(conn_.get(), query.c_str());
+PqResult PqShell::exec(const std::string &sql) {
+    PGresult *raw = PQexec(conn_.get(), sql.c_str());
+    PqResult result(raw);
+
+    const auto st = result.status();
+    if (st != PGRES_COMMAND_OK && st != PGRES_TUPLES_OK) {
+        throw PqError(result.error_msg());
+    }
+
+    return result;
+}
+
+PqResult PqShell::exec_params(const std::string &sql, int nParams, const char *const *values,
+                              const int *lengths, const int *formats, int resultFormat) {
+    PGresult *raw = PQexecParams(conn_.get(), sql.c_str(), nParams, nullptr, values, lengths,
+                                 formats, resultFormat);
     PqResult result(raw);
 
     const auto st = result.status();

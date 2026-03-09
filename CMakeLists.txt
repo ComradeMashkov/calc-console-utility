@@ -46,6 +46,7 @@ add_library(calc_core
     src/json_loader.cpp
     src/logger.cpp
     src/pq_shell.cpp
+    src/cache.cpp
 )
 
 target_include_directories(calc_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)

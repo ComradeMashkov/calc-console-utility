@@ -9,30 +9,30 @@
 namespace calc_utility {
 
 class PqError : public std::runtime_error {
-public:
+  public:
     using std::runtime_error::runtime_error;
 };
 
 struct PGconnDeleter {
-    void operator()(PGconn* conn) const noexcept;
+    void operator()(PGconn *conn) const noexcept;
 };
 
 struct PGresultDeleter {
-    void operator()(PGresult* result) const noexcept;
+    void operator()(PGresult *result) const noexcept;
 };
 
 using pgconn_ptr = std::unique_ptr<PGconn, PGconnDeleter>;
 using pgresult_ptr = std::unique_ptr<PGresult, PGresultDeleter>;
 
 class PqResult {
-public:
-    explicit PqResult(PGresult* res);
+  public:
+    explicit PqResult(PGresult *res);
 
-    PqResult(const PqResult&) = delete;
-    PqResult& operator=(const PqResult&) = delete;
+    PqResult(const PqResult &) = delete;
+    PqResult &operator=(const PqResult &) = delete;
 
-    PqResult(PqResult&&) noexcept = default;
-    PqResult& operator=(PqResult&&) noexcept = default;
+    PqResult(PqResult &&) noexcept = default;
+    PqResult &operator=(PqResult &&) noexcept = default;
 
     ExecStatusType status() const noexcept;
     int rows() const noexcept;
@@ -41,30 +41,33 @@ public:
     bool is_null(int row, int col) const noexcept;
     std::string value(int row, int col) const;
     std::string error_msg() const;
-    PGresult* get_handle() noexcept;
+    PGresult *get_handle() noexcept;
 
-private:
+  private:
     pgresult_ptr res_;
 };
 
 class PqShell {
-public:
-    explicit PqShell(const std::string& conn);
+  public:
+    explicit PqShell(const std::string &conn);
 
-    PqShell(const PqShell&) = delete;
-    PqShell& operator=(const PqShell&) = delete;
+    PqShell(const PqShell &) = delete;
+    PqShell &operator=(const PqShell &) = delete;
 
-    PqShell(PqShell&&) noexcept = default;
-    PqShell& operator=(PqShell&&) noexcept = default;
+    PqShell(PqShell &&) noexcept = default;
+    PqShell &operator=(PqShell &&) noexcept = default;
 
     bool is_open() const noexcept;
-    PGconn* get_handle() noexcept;
-    const PGconn* get_handle() const noexcept;
+    PGconn *get_handle() noexcept;
+    const PGconn *get_handle() const noexcept;
     std::string error_msg() const;
 
-    PqResult exec(std::string_view sql);
+    PqResult exec(const std::string &sql);
+    PqResult exec_params(const std::string &sql, int nParams, const char *const *values,
+                         const int *lengths = nullptr, const int *formats = nullptr,
+                         int resultFormat = 0);
 
-private:
+  private:
     pgconn_ptr conn_;
 };
 
