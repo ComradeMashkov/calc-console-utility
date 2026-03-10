@@ -65,6 +65,20 @@ if (BUILD_TESTING)
   add_executable(tests tests/parser_tests.cpp tests/checker_tests.cpp tests/calculator_tests.cpp tests/json_loader_tests.cpp)
   target_link_libraries(tests PRIVATE calc_core GTest::gtest_main)
   add_test(NAME tests COMMAND tests)
+
+  find_program(VALGRIND_EXE NAMES valgrind)
+  if (VALGRIND_EXE)
+    add_test(
+        NAME tests_valgrind
+        COMMAND
+        ${VALGRIND_EXE}
+        --error-exitcode=1
+        --leak-check=full
+        --show-leak-kinds=all
+        --track-origins=yes
+        $<TARGET_FILE:tests>
+    )
+  endif()
 endif()
 
 # clang-tidy
