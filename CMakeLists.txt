@@ -35,6 +35,8 @@ if (BUILD_TESTING)
     FetchContent_MakeAvailable(googletest)
 endif()
 
+find_package(PostgreSQL REQUIRED)
+
 add_library(calc_core
     src/calculator.cpp
     src/checker.cpp
@@ -43,10 +45,18 @@ add_library(calc_core
     src/runner.cpp
     src/json_loader.cpp
     src/logger.cpp
+    src/pq_shell.cpp
+    src/cache.cpp
 )
 
 target_include_directories(calc_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_link_libraries(calc_core PUBLIC mathcalc nlohmann_json::nlohmann_json spdlog::spdlog)
+target_link_libraries(calc_core 
+    PUBLIC 
+        mathcalc
+        nlohmann_json::nlohmann_json
+        spdlog::spdlog
+        PostgreSQL::PostgreSQL    
+)
 
 add_executable(calculator src/main.cpp)
 target_link_libraries(calculator PRIVATE calc_core)
@@ -55,6 +65,20 @@ if (BUILD_TESTING)
   add_executable(tests tests/parser_tests.cpp tests/checker_tests.cpp tests/calculator_tests.cpp tests/json_loader_tests.cpp)
   target_link_libraries(tests PRIVATE calc_core GTest::gtest_main)
   add_test(NAME tests COMMAND tests)
+
+  find_program(VALGRIND_EXE NAMES valgrind)
+  if (VALGRIND_EXE)
+    add_test(
+        NAME tests_valgrind
+        COMMAND
+        ${VALGRIND_EXE}
+        --error-exitcode=1
+        --leak-check=full
+        --show-leak-kinds=all
+        --track-origins=yes
+        $<TARGET_FILE:tests>
+    )
+  endif()
 endif()
 
 # clang-tidy

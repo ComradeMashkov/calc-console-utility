@@ -1,3 +1,5 @@
 .vscode/
 build/
 Testing/
+perf.data
+perf.data.old

@@ -11,7 +11,7 @@ class Printer {
     void print() const;
 
   private:
-    Result& result_;
+    Result &result_;
 };
 
 } // namespace calc_utility

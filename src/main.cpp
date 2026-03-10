@@ -3,7 +3,7 @@
 int main(int argc, char **argv) {
     try {
         calc_utility::Result result;
-        const calc_utility::Runner runner(result, argc, argv);
+        calc_utility::Runner runner(result, argc, argv);
         runner.run();
     } catch (const calc_utility::HelpRequest &e) {
         calc_utility::Logger::instance().info("{}", e.what());
