@@ -26,6 +26,7 @@ TEST_F(CalculatorTest, AddOpr) {
 
     ASSERT_NO_THROW(c.calculate());
 
+    EXPECT_EQ(res.status, 0);
     EXPECT_EQ(res.i64.value(), 42 + 67);
 }
 
@@ -36,7 +37,8 @@ TEST_F(CalculatorTest, AddOverflowOpr) {
 
     Calculator c(res);
 
-    EXPECT_THROW(c.calculate(), std::runtime_error);
+    ASSERT_NO_THROW(c.calculate());
+    EXPECT_NE(res.status, 0);
 }
 
 TEST_F(CalculatorTest, SubOpr) {
@@ -48,6 +50,7 @@ TEST_F(CalculatorTest, SubOpr) {
 
     ASSERT_NO_THROW(c.calculate());
 
+    EXPECT_EQ(res.status, 0);
     EXPECT_EQ(res.i64.value(), 42 - 67);
 }
 
@@ -58,7 +61,8 @@ TEST_F(CalculatorTest, SubOverflowOpr) {
 
     Calculator c(res);
 
-    EXPECT_THROW(c.calculate(), std::runtime_error);
+    ASSERT_NO_THROW(c.calculate());
+    EXPECT_NE(res.status, 0);
 }
 
 TEST_F(CalculatorTest, MulOpr) {
@@ -70,6 +74,7 @@ TEST_F(CalculatorTest, MulOpr) {
 
     ASSERT_NO_THROW(c.calculate());
 
+    EXPECT_EQ(res.status, 0);
     EXPECT_EQ(res.i64.value(), 42 * 67);
 }
 
@@ -80,7 +85,8 @@ TEST_F(CalculatorTest, MulOverflowOpr) {
 
     Calculator c(res);
 
-    EXPECT_THROW(c.calculate(), std::runtime_error);
+    ASSERT_NO_THROW(c.calculate());
+    EXPECT_NE(res.status, 0);
 }
 
 TEST_F(CalculatorTest, DivOpr) {
@@ -92,6 +98,7 @@ TEST_F(CalculatorTest, DivOpr) {
 
     ASSERT_NO_THROW(c.calculate());
 
+    EXPECT_EQ(res.status, 0);
     EXPECT_EQ(res.d.value(), 42.0 / 3.0);
 }
 
@@ -102,7 +109,8 @@ TEST_F(CalculatorTest, DivByZeroOpr) {
 
     Calculator c(res);
 
-    EXPECT_THROW(c.calculate(), std::runtime_error);
+    ASSERT_NO_THROW(c.calculate());
+    EXPECT_NE(res.status, 0);
 }
 
 TEST_F(CalculatorTest, PowOpr) {
@@ -114,6 +122,7 @@ TEST_F(CalculatorTest, PowOpr) {
 
     ASSERT_NO_THROW(c.calculate());
 
+    EXPECT_EQ(res.status, 0);
     EXPECT_EQ(res.d.value(), std::pow(2, 10));
 }
 
@@ -124,7 +133,8 @@ TEST_F(CalculatorTest, PowDivByZeroOpr) {
 
     Calculator c(res);
 
-    EXPECT_THROW(c.calculate(), std::runtime_error);
+    ASSERT_NO_THROW(c.calculate());
+    EXPECT_NE(res.status, 0);
 }
 
 TEST_F(CalculatorTest, PowOverflowOpr) {
@@ -134,7 +144,8 @@ TEST_F(CalculatorTest, PowOverflowOpr) {
 
     Calculator c(res);
 
-    EXPECT_THROW(c.calculate(), std::runtime_error);
+    ASSERT_NO_THROW(c.calculate());
+    EXPECT_NE(res.status, 0);
 }
 
 TEST_F(CalculatorTest, FacOpr) {
@@ -145,6 +156,7 @@ TEST_F(CalculatorTest, FacOpr) {
     
     ASSERT_NO_THROW(c.calculate());
 
+    EXPECT_EQ(res.status, 0);
     EXPECT_EQ(res.i64.value(), 120);
 }
 
@@ -154,7 +166,8 @@ TEST_F(CalculatorTest, FacOverflowOpr) {
 
     Calculator c(res);
 
-    EXPECT_THROW(c.calculate(), std::runtime_error);
+    ASSERT_NO_THROW(c.calculate());
+    EXPECT_NE(res.status, 0);
 }
 
 } // namespace calc_utility
